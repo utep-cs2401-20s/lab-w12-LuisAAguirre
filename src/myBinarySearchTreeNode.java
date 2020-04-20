@@ -2,13 +2,11 @@ class myBinarySearchTreeNode{
   int myValue;
   myBinarySearchTreeNode left;
   myBinarySearchTreeNode right;
+
     
   myBinarySearchTreeNode(int inValue){
     // created a new node with empty child pointers
     myValue = inValue;
-    left = null;
-    right = null;
-
   }
   
   myBinarySearchTreeNode(int[] A){
@@ -20,7 +18,6 @@ class myBinarySearchTreeNode{
     for(int i = 1; i < A.length; i++){
       root.insert(A[i]);
     }
-
   }
   
   public void insert(int inValue){
@@ -32,26 +29,29 @@ class myBinarySearchTreeNode{
     //    * or in the right subtree.
     // If the value already exists in the tree, no action is taken. 
 
+    // Base case. If inValue equals myValue, node will not be created.
     if(inValue == myValue){
+      System.out.println("Duplicate element found. Element will not be added to tree.");
       return;
     }
 
+    // Generates left side of tree.
     if(inValue < myValue){
-      if(left != null) {
-        left.insert(inValue);
-      } else{
+      if(left == null) {
         left = new myBinarySearchTreeNode(inValue);
-      }
-    }
-
-    if(inValue > myValue){
-      if(right != null) {
-        right.insert(inValue);
       } else{
-        right = new myBinarySearchTreeNode(inValue);
+        left.insert(inValue);
       }
     }
 
+    // Generates right side of tree.
+    if(inValue > myValue){
+      if(right == null) {
+        right = new myBinarySearchTreeNode(inValue);
+      } else{
+        right.insert(inValue);
+      }
+    }
 
   }
   
@@ -59,14 +59,20 @@ class myBinarySearchTreeNode{
      // This method recursively calculates the height of the entire (sub)tree.
      // This method will take O(n) time
 
-    int lHeight = 0;
-    int rHeight = 0;
-    if(left == null && right == null){
-      return 0;
+    int rHeight = 0, lHeight = 0;
+
+    // Counts height of left children. Counts edges which is why count starts at 1
+    if(left != null) {
+      lHeight = 1 + left.height();
     }
 
-    return -1;
+    // Counts height of right children. Counts edges which is why count starts at 1
+    if(right != null) {
+      rHeight = 1 + right.height();
+    }
 
+    // Returns whichever variable is higher
+    return Math.max(lHeight, rHeight);
   }
   
   public int depth(int search){
@@ -75,12 +81,45 @@ class myBinarySearchTreeNode{
      // Note that if the tree is a proper BST, this method should complete in O(log n) time.
      // Additionally, remember that the depth is the number of nodes on the path from a node to the root 
      // (i.e. the number of the recursive calls).
-    return -1;
+
+
+    int count = 0;
+
+    // Base case
+    if(search == myValue){
+      return 0;
+    }
+
+    // Searches for value on left children and increases count.
+    if(search < myValue && left != null){
+      return count + 1 + left.depth(search);
+    }
+
+    // Searches for value on right children and increases count
+    if(search > myValue && right != null){
+      return count + 1 + right.depth(search);
+    }
+
+    return count;
   }
 
   public int size(){
     // This method recursively calculates the number of nodes in the (sub)tree.
-    return -1;
+
+    int size = 0;
+
+    // Traverses through every node on left side to increase size variable
+    if(left != null) {
+      size += left.size();
+    }
+
+    // Traverses through every node on right side to increase size variable
+    if(right != null){
+      size += right.size();
+    }
+
+    // Adds tree size
+    return 1 + size;
   }
 
   // Utility function included so you can debug your solution. 
